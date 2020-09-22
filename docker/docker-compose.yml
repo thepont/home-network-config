@@ -1,0 +1,28 @@
+version: '3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:stable
+    volumes:
+      - /PATH_TO_YOUR_CONFIG:/config
+    environment:
+      - TZ=Australia/Melboune
+    restart: always
+    network_mode: host
+  vtuner:
+    container_name: vtuner
+    build: ./vtuner
+    environment:
+      - PORT=8080
+    restart: always
+    network_mode: host
+  nginx:
+    container_name: nginx
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx/templates
+    ports:
+      - "8080:80"
+    environment:
+      - HASS_IO_ADDRESS=http://homeassistant:8123
+      - VTUNER_ADDRESS=http://vtuner:8080
