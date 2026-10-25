@@ -2,14 +2,16 @@ version: '3'
 services:
   homeassistant:
     container_name: homeassistant
-    image: homeassistant/home-assistant:stable
+    image: ghcr.io/home-assistant/home-assistant:2026.10.3
     volumes:
-      - /PATH_TO_YOUR_CONFIG:/config
+      - ./config:/config
     environment:
-      - TZ=Australia/Melboune
-    restart: always
+      - TZ=Australia/Melbourne
+    restart: unless-stopped
+    stop_grace_period: 60s
     network_mode: host
   vtuner:
+    profiles: [legacy]
     container_name: vtuner
     build: ./vtuner
     environment:
@@ -17,6 +19,7 @@ services:
     restart: always
     network_mode: host
   nginx:
+    profiles: [legacy]
     container_name: nginx
     image: nginx
     volumes:
